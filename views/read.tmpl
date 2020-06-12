@@ -1,0 +1,56 @@
+{{ define "read.tmpl" }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="refresh" content="15">
+    <title>Lava竞猜</title>
+    <style>
+        .box{
+            margin: auto;
+            text-align: center;
+
+        }
+        .code_box{
+            display: flex;
+            justify-content: space-around;
+            width: 1080px;
+            height: 500px;
+            margin: 0 auto;
+        }
+        .redColor{
+            color: red;
+        }
+       
+    </style>
+</head>
+<body>
+    <div class="box">
+
+        <h4>Lava火石竞猜第 <span class="redColor"> {{ .slotIndex }} 期 </span></h4>
+        <p>涨跌比例: {{ .rate }}</p >
+        
+        <p>奖金池总额: {{ .total }} LV</p >
+
+        <div class="code_box">
+            <div class="left">
+                <img class="fit-picture" src="/static/images/{{ .longAddr }}.png"/>
+                <p>买涨地址: {{ .longAddr }}</p >
+                <p>看涨池（LV）: {{ .longAmount }}</p >
+                <p>预期单位净收益（LV）: {{ .longRight }}</p >
+
+            </div>
+            <div class="right">
+                    <img class="fit-picture" src="/static/images/{{ .shortAddr }}.png"/>
+                    <p>买跌地址: {{ .shortAddr }}</p >
+                    <p>看跌池（LV）: {{ .shortAmount }}</p >
+                    <p>预期单位净收益（LV）: {{ .shortRight }}</p >
+
+            </div>
+        </div>
+    </div>            
+</body>
+</html>
+{{ end }}

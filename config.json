@@ -1,0 +1,12 @@
+{
+  "date": "2019-04-30",
+  "rpc":{
+    "port":"8080"
+  },
+  "redis":{
+    "type":"tcp",
+    "ip":"localhost",
+    "port":"6379",
+    "password":""
+  }
+}
