@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/gomodule/redigo/redis"
-	"github.com/lava-future/rpc"
+	"github.com/lava-game/rpc"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
