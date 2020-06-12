@@ -15,7 +15,7 @@ import (
 	"github.com/boombuler/barcode/qr"
 	"github.com/gin-gonic/gin"
 	"github.com/gomodule/redigo/redis"
-	"github.com/lava-future/protocol"
+	"github.com/lava-game/protocol"
 )
 
 // RediCon 为redis实例
