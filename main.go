@@ -16,6 +16,7 @@ var port string
 var redisPort string
 var redisType string
 var redisIP string
+var redisPWD string
 
 func init() {
 	config()
@@ -23,6 +24,10 @@ func init() {
 
 func main() {
 	rpc.RediCon, _ = redis.Dial(redisType, redisIP+":"+redisPort)
+	if _, err := rpc.RediCon.Do("AUTH", redisPWD); err != nil {
+		rpc.RediCon.Close()
+		fmt.Print("redis权限错误!")
+	}
 	defer rpc.RediCon.Close()
 
 	r := gin.Default()
@@ -54,4 +59,5 @@ func config() {
 	redisPort = viper.Get("redis.port").(string)
 	redisType = viper.Get("redis.type").(string)
 	redisIP = viper.Get("redis.ip").(string)
+	redisPWD = viper.Get("redis.password").(string)
 }
