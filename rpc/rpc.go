@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"image/png"
 	"net/http"
-	"os"
 	"path"
 	"strconv"
 	"time"
@@ -26,13 +25,19 @@ func ReadHandler(c *gin.Context) {
 	// 获取最新高度
 	var chainInfo protocol.ChainInfo
 	blockChainInfo, chainErr := redis.String(RediCon.Do("get", "blockchaininfo"))
-	ErrCheck(chainErr)
+	if chainErr != nil {
+		fmt.Println("sorry,blockchaininfo has some error:", chainErr)
+		return
+	}
 	json.Unmarshal([]byte(blockChainInfo), &chainInfo)
 	IndexNumber := strconv.Itoa(int(chainInfo.SlotIndex))
 
 	// 获取slotinfo信息
 	accountInfo, slotErr := redis.String(RediCon.Do("get", "order_"+IndexNumber))
-	ErrCheck(slotErr)
+	if slotErr != nil {
+		fmt.Println("sorry,get slotinfo has some error:", slotErr)
+		return
+	}
 	var slotInfo protocol.SlotInfo
 	json.Unmarshal([]byte(accountInfo), &slotInfo)
 
@@ -46,14 +51,6 @@ func ReadHandler(c *gin.Context) {
 		"shortAmount": float64(slotInfo.ShortInfo.Amount) / 100000000,
 		"longRight":   float64(slotInfo.Total) / float64(slotInfo.LongInfo.Amount),
 		"shortRight":  float64(slotInfo.Total) / float64(slotInfo.ShortInfo.Amount)})
-}
-
-// ErrCheck 错误检查
-func ErrCheck(err error) {
-	if err != nil {
-		fmt.Println("sorry,has some error:", err)
-		os.Exit(-1)
-	}
 }
 
 // ImageHandler 返回地址二维码
