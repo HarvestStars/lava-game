@@ -20,7 +20,7 @@ import (
 // RediCon 为redis实例
 var RediCon redis.Conn
 
-// ReadHandler 删除数据库中某条记录
+// ReadHandler 读取庄家信息
 func ReadHandler(c *gin.Context) {
 	// 获取最新高度
 	var chainInfo protocol.ChainInfo
@@ -78,4 +78,34 @@ func ImageHandler(c *gin.Context) {
 	var content bytes.Buffer
 	png.Encode(&content, qrCode)
 	http.ServeContent(w, c.Request, "image", time.Time{}, bytes.NewReader(content.Bytes()))
+}
+
+// OrderHandler 列出所有涨跌地址相关信息
+func OrderHandler(c *gin.Context) {
+	// 获取最新高度
+	var chainInfo protocol.ChainInfo
+	blockChainInfo, chainErr := redis.String(RediCon.Do("get", "blockchaininfo"))
+	if chainErr != nil {
+		fmt.Println("sorry,blockchaininfo has some error:", chainErr)
+		return
+	}
+	json.Unmarshal([]byte(blockChainInfo), &chainInfo)
+	IndexNumber := strconv.Itoa(int(chainInfo.SlotIndex))
+
+	// 获取slotinfo信息
+	accountInfo, slotErr := redis.String(RediCon.Do("get", "order_"+IndexNumber))
+	if slotErr != nil {
+		fmt.Println("sorry,get slotinfo has some error:", slotErr)
+		return
+	}
+	var slotInfo protocol.SlotInfo
+	json.Unmarshal([]byte(accountInfo), &slotInfo)
+
+	c.JSON(200, gin.H{
+		"longAddr":    slotInfo.LongInfo.Addr,
+		"shortAddr":   slotInfo.ShortInfo.Addr,
+		"slotIndex":   chainInfo.SlotIndex,
+		"total":       slotInfo.Total / 100000000,
+		"longAmount":  float64(slotInfo.LongInfo.Amount) / 100000000,
+		"shortAmount": float64(slotInfo.ShortInfo.Amount) / 100000000})
 }

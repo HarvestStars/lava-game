@@ -34,7 +34,7 @@ func main() {
 	r.LoadHTMLGlob("views/*")
 	r.GET("/lava", rpc.ReadHandler)
 	r.GET("/static/images/:addr", rpc.ImageHandler)
-
+	r.GET("/order", rpc.OrderHandler)
 	r.Run(":" + port)
 }
 
