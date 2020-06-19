@@ -17,3 +17,9 @@ type ChainInfo struct {
 	Height    int32 `json:"height"`
 	SlotIndex int32 `json:"slot"`
 }
+
+// LiquidInfo ...
+type LiquidInfo struct {
+	Long  map[string]int64 `json:"LongBenefi"`
+	Short map[string]int64 `json:"ShortBenefi"`
+}

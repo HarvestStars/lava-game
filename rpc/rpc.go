@@ -19,9 +19,21 @@ import (
 
 // RediCon 为redis实例
 var RediCon redis.Conn
+var RedisPort string
+var RedisType string
+var RedisIP string
+var RedisPWD string
 
 // ReadHandler 读取庄家信息
 func ReadHandler(c *gin.Context) {
+	// 短链接
+	RediCon, _ = redis.Dial(RedisType, RedisIP+":"+RedisPort)
+	if _, err := RediCon.Do("AUTH", RedisPWD); err != nil {
+		RediCon.Close()
+		fmt.Print("redis auth error \n")
+	}
+	defer RediCon.Close()
+
 	// 获取最新高度
 	var chainInfo protocol.ChainInfo
 	blockChainInfo, chainErr := redis.String(RediCon.Do("get", "blockchaininfo"))
@@ -82,6 +94,14 @@ func ImageHandler(c *gin.Context) {
 
 // OrderHandler 列出所有涨跌地址相关信息
 func OrderHandler(c *gin.Context) {
+	// 短链接
+	RediCon, _ = redis.Dial(RedisType, RedisIP+":"+RedisPort)
+	if _, err := RediCon.Do("AUTH", RedisPWD); err != nil {
+		RediCon.Close()
+		fmt.Print("redis auth error \n")
+	}
+	defer RediCon.Close()
+
 	// 获取最新高度
 	var chainInfo protocol.ChainInfo
 	blockChainInfo, chainErr := redis.String(RediCon.Do("get", "blockchaininfo"))
@@ -108,4 +128,25 @@ func OrderHandler(c *gin.Context) {
 		"total":       slotInfo.Total / 100000000,
 		"longAmount":  float64(slotInfo.LongInfo.Amount) / 100000000,
 		"shortAmount": float64(slotInfo.ShortInfo.Amount) / 100000000})
+}
+
+// LiquidHandler 返回结算结果
+func LiquidHandler(c *gin.Context) {
+	slotStr := c.Param("slotindex")
+	key := "liquid_" + slotStr
+	// 短链接
+	RediCon, _ = redis.Dial(RedisType, RedisIP+":"+RedisPort)
+	if _, err := RediCon.Do("AUTH", RedisPWD); err != nil {
+		RediCon.Close()
+		fmt.Print("redis auth error \n")
+	}
+	defer RediCon.Close()
+	var liquidInfo protocol.LiquidInfo
+	liquidInfoRaw, err := redis.String(RediCon.Do("get", key))
+	if err != nil {
+		fmt.Println("Get liquidInfoRaw error:", err)
+		return
+	}
+	json.Unmarshal([]byte(liquidInfoRaw), &liquidInfo)
+	c.JSON(200, &liquidInfo)
 }
