@@ -129,6 +129,11 @@ func OrderHandler(c *gin.Context) {
 		fmt.Println("sorry,get slotinfo has some error:", slotErr)
 		return
 	}
+	remainder := chainInfo.Height % chainInfo.BlocksInSlot
+	slotOver := false
+	if remainder >= (chainInfo.BlocksInSlot - DeadLine) {
+		slotOver = true
+	}
 	var slotInfo protocol.SlotInfo
 	json.Unmarshal([]byte(accountInfo), &slotInfo)
 
@@ -138,7 +143,8 @@ func OrderHandler(c *gin.Context) {
 		"slotIndex":   chainInfo.SlotIndex,
 		"total":       slotInfo.Total / 100000000,
 		"longAmount":  float64(slotInfo.LongInfo.Amount) / 100000000,
-		"shortAmount": float64(slotInfo.ShortInfo.Amount) / 100000000})
+		"shortAmount": float64(slotInfo.ShortInfo.Amount) / 100000000,
+		"slotOver":    slotOver})
 }
 
 // LiquidHandler 返回结算结果
