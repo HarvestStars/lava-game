@@ -17,6 +17,7 @@ type ChainInfo struct {
 	Height       int `json:"height"`
 	SlotIndex    int `json:"slot"`
 	BlocksInSlot int `json:"blocksinslot"`
+	DeadLine     int `json:"deadline"`
 }
 
 // LiquidInfo ...

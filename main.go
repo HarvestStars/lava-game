@@ -45,7 +45,7 @@ func config() {
 		log.Printf("Defaulting to port %s", port)
 	}
 
-	rpc.DeadLine = int(viper.Get("backend.deadline").(float64))
+	//rpc.DeadLine = int(viper.Get("backend.deadline").(float64))
 	// redis 配置
 	rpc.RedisPort = viper.Get("redis.port").(string)
 	rpc.RedisType = viper.Get("redis.type").(string)

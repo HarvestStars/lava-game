@@ -23,7 +23,6 @@ var RedisPort string
 var RedisType string
 var RedisIP string
 var RedisPWD string
-var DeadLine int
 
 // ReadHandler 读取庄家信息
 func ReadHandler(c *gin.Context) {
@@ -58,7 +57,7 @@ func ReadHandler(c *gin.Context) {
 
 	remainder := chainInfo.Height % chainInfo.BlocksInSlot
 	slotOver := false
-	if remainder >= (chainInfo.BlocksInSlot - DeadLine) {
+	if remainder >= (chainInfo.BlocksInSlot - chainInfo.BlocksInSlot) {
 		slotOver = true
 	}
 	c.HTML(200, "read.tmpl", gin.H{
@@ -131,7 +130,7 @@ func OrderHandler(c *gin.Context) {
 	}
 	remainder := chainInfo.Height % chainInfo.BlocksInSlot
 	slotOver := false
-	if remainder >= (chainInfo.BlocksInSlot - DeadLine) {
+	if remainder >= (chainInfo.BlocksInSlot - chainInfo.DeadLine) {
 		slotOver = true
 	}
 	var slotInfo protocol.SlotInfo
