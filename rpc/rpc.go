@@ -28,9 +28,11 @@ var RedisPWD string
 func ReadHandler(c *gin.Context) {
 	// 短链接
 	RediCon, _ = redis.Dial(RedisType, RedisIP+":"+RedisPort)
-	if _, err := RediCon.Do("AUTH", RedisPWD); err != nil {
-		RediCon.Close()
-		fmt.Print("redis auth error \n")
+	if RedisPWD != "" {
+		if _, err := RediCon.Do("AUTH", RedisPWD); err != nil {
+			RediCon.Close()
+			fmt.Print("redis auth error \n")
+		}
 	}
 	defer RediCon.Close()
 
@@ -96,9 +98,11 @@ func ImageHandler(c *gin.Context) {
 func OrderHandler(c *gin.Context) {
 	// 短链接
 	RediCon, _ = redis.Dial(RedisType, RedisIP+":"+RedisPort)
-	if _, err := RediCon.Do("AUTH", RedisPWD); err != nil {
-		RediCon.Close()
-		fmt.Print("redis auth error \n")
+	if RedisPWD != "" {
+		if _, err := RediCon.Do("AUTH", RedisPWD); err != nil {
+			RediCon.Close()
+			fmt.Print("redis auth error \n")
+		}
 	}
 	defer RediCon.Close()
 
@@ -136,9 +140,11 @@ func LiquidHandler(c *gin.Context) {
 	key := "liquid_" + slotStr
 	// 短链接
 	RediCon, _ = redis.Dial(RedisType, RedisIP+":"+RedisPort)
-	if _, err := RediCon.Do("AUTH", RedisPWD); err != nil {
-		RediCon.Close()
-		fmt.Print("redis auth error \n")
+	if RedisPWD != "" {
+		if _, err := RediCon.Do("AUTH", RedisPWD); err != nil {
+			RediCon.Close()
+			fmt.Print("redis auth error \n")
+		}
 	}
 	defer RediCon.Close()
 	var liquidInfo protocol.LiquidInfo
@@ -149,4 +155,32 @@ func LiquidHandler(c *gin.Context) {
 	}
 	json.Unmarshal([]byte(liquidInfoRaw), &liquidInfo)
 	c.JSON(200, &liquidInfo)
+}
+
+// ParticipateHandler 返回滚动tx信息, 轮询10秒
+func ParticipateHandler(c *gin.Context) {
+	beg := c.Query("beg")
+	slot := c.Query("slot")
+	key := "participate_" + slot
+
+	// 短链接
+	RediCon, _ = redis.Dial(RedisType, RedisIP+":"+RedisPort)
+	if RedisPWD != "" {
+		if _, err := RediCon.Do("AUTH", RedisPWD); err != nil {
+			RediCon.Close()
+			fmt.Print("redis auth error \n")
+		}
+	}
+	defer RediCon.Close()
+
+	var participate protocol.Participate
+	participateInfoRaw, err := redis.String(RediCon.Do("get", key))
+	if err != nil {
+		fmt.Println("Get participateInfoRaw error:", err)
+		return
+	}
+	json.Unmarshal([]byte(participateInfoRaw), &participate)
+	begInt, err := strconv.Atoi(beg)
+	participatePart := participate.PoolEntrySet[begInt:]
+	c.JSON(200, &participatePart)
 }

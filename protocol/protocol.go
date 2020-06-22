@@ -23,3 +23,14 @@ type LiquidInfo struct {
 	Long  map[string]int64 `json:"LongBenefi"`
 	Short map[string]int64 `json:"ShortBenefi"`
 }
+
+// Participate ...
+type Participate struct {
+	PoolEntrySet []MemPoolEntryWithHash `json:"pooltxs"`
+}
+
+// MemPoolEntryWithHash ...
+type MemPoolEntryWithHash struct {
+	Hash    string           `json:"txid"`
+	Account map[string]int64 `json:"account"`
+}

@@ -24,6 +24,7 @@ func main() {
 	r.GET("/static/images/:addr", rpc.ImageHandler)
 	r.GET("/order", rpc.OrderHandler)
 	r.GET("/liquid/:slotindex", rpc.LiquidHandler)
+	r.GET("/participate", rpc.ParticipateHandler)
 	r.Run(":" + port)
 }
 
