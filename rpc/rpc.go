@@ -143,7 +143,8 @@ func OrderHandler(c *gin.Context) {
 		"total":       slotInfo.Total / 100000000,
 		"longAmount":  float64(slotInfo.LongInfo.Amount) / 100000000,
 		"shortAmount": float64(slotInfo.ShortInfo.Amount) / 100000000,
-		"slotOver":    slotOver})
+		"slotOver":    slotOver,
+		"deadline":    chainInfo.DeadLine})
 }
 
 // LiquidHandler 返回结算结果
