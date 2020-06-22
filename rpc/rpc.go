@@ -23,6 +23,7 @@ var RedisPort string
 var RedisType string
 var RedisIP string
 var RedisPWD string
+var DeadLine int
 
 // ReadHandler 读取庄家信息
 func ReadHandler(c *gin.Context) {
@@ -55,6 +56,11 @@ func ReadHandler(c *gin.Context) {
 	var slotInfo protocol.SlotInfo
 	json.Unmarshal([]byte(accountInfo), &slotInfo)
 
+	remainder := chainInfo.Height % chainInfo.BlocksInSlot
+	slotOver := false
+	if remainder >= (chainInfo.BlocksInSlot - DeadLine) {
+		slotOver = true
+	}
 	c.HTML(200, "read.tmpl", gin.H{
 		"longAddr":    slotInfo.LongInfo.Addr,
 		"shortAddr":   slotInfo.ShortInfo.Addr,
@@ -64,7 +70,8 @@ func ReadHandler(c *gin.Context) {
 		"longAmount":  float64(slotInfo.LongInfo.Amount) / 100000000,
 		"shortAmount": float64(slotInfo.ShortInfo.Amount) / 100000000,
 		"longRight":   float64(slotInfo.Total) / float64(slotInfo.LongInfo.Amount),
-		"shortRight":  float64(slotInfo.Total) / float64(slotInfo.ShortInfo.Amount)})
+		"shortRight":  float64(slotInfo.Total) / float64(slotInfo.ShortInfo.Amount),
+		"slotOver":    slotOver})
 }
 
 // ImageHandler 返回地址二维码

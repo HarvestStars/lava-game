@@ -14,8 +14,9 @@ type account struct {
 
 // ChainInfo ...
 type ChainInfo struct {
-	Height    int32 `json:"height"`
-	SlotIndex int32 `json:"slot"`
+	Height       int `json:"height"`
+	SlotIndex    int `json:"slot"`
+	BlocksInSlot int `json:"blocksinslot"`
 }
 
 // LiquidInfo ...
