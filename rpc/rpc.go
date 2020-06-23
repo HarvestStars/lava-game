@@ -32,6 +32,7 @@ func ReadHandler(c *gin.Context) {
 		if _, err := RediCon.Do("AUTH", RedisPWD); err != nil {
 			RediCon.Close()
 			fmt.Print("redis auth error \n")
+			return
 		}
 	}
 	defer RediCon.Close()
@@ -108,6 +109,7 @@ func OrderHandler(c *gin.Context) {
 		if _, err := RediCon.Do("AUTH", RedisPWD); err != nil {
 			RediCon.Close()
 			fmt.Print("redis auth error \n")
+			return
 		}
 	}
 	defer RediCon.Close()
@@ -117,6 +119,9 @@ func OrderHandler(c *gin.Context) {
 	blockChainInfo, chainErr := redis.String(RediCon.Do("get", "blockchaininfo"))
 	if chainErr != nil {
 		fmt.Println("sorry,blockchaininfo has some error:", chainErr)
+		c.JSON(200, gin.H{
+			"OK":    false,
+			"error": chainErr.Error()})
 		return
 	}
 	json.Unmarshal([]byte(blockChainInfo), &chainInfo)
@@ -126,6 +131,9 @@ func OrderHandler(c *gin.Context) {
 	accountInfo, slotErr := redis.String(RediCon.Do("get", "order_"+IndexNumber))
 	if slotErr != nil {
 		fmt.Println("sorry,get slotinfo has some error:", slotErr)
+		c.JSON(200, gin.H{
+			"OK":    false,
+			"error": slotErr.Error()})
 		return
 	}
 	remainder := chainInfo.Height % chainInfo.BlocksInSlot
@@ -137,6 +145,8 @@ func OrderHandler(c *gin.Context) {
 	json.Unmarshal([]byte(accountInfo), &slotInfo)
 
 	c.JSON(200, gin.H{
+		"OK":           true,
+		"error":        nil,
 		"height":       chainInfo.Height,
 		"blocksInSlot": chainInfo.BlocksInSlot,
 		"longAddr":     slotInfo.LongInfo.Addr,
@@ -159,6 +169,7 @@ func LiquidHandler(c *gin.Context) {
 		if _, err := RediCon.Do("AUTH", RedisPWD); err != nil {
 			RediCon.Close()
 			fmt.Print("redis auth error \n")
+			return
 		}
 	}
 	defer RediCon.Close()
@@ -166,6 +177,9 @@ func LiquidHandler(c *gin.Context) {
 	liquidInfoRaw, err := redis.String(RediCon.Do("get", key))
 	if err != nil {
 		fmt.Println("Get liquidInfoRaw error:", err)
+		c.JSON(200, gin.H{
+			"OK":    false,
+			"error": err.Error()})
 		return
 	}
 	json.Unmarshal([]byte(liquidInfoRaw), &liquidInfo)
@@ -184,6 +198,7 @@ func ParticipateHandler(c *gin.Context) {
 		if _, err := RediCon.Do("AUTH", RedisPWD); err != nil {
 			RediCon.Close()
 			fmt.Print("redis auth error \n")
+			return
 		}
 	}
 	defer RediCon.Close()
@@ -192,6 +207,9 @@ func ParticipateHandler(c *gin.Context) {
 	participateInfoRaw, err := redis.String(RediCon.Do("get", key))
 	if err != nil {
 		fmt.Println("Get participateInfoRaw error:", err)
+		c.JSON(200, gin.H{
+			"OK":    false,
+			"error": err.Error()})
 		return
 	}
 	json.Unmarshal([]byte(participateInfoRaw), &participate)
