@@ -140,9 +140,9 @@ func OrderHandler(c *gin.Context) {
 		"longAddr":    slotInfo.LongInfo.Addr,
 		"shortAddr":   slotInfo.ShortInfo.Addr,
 		"slotIndex":   chainInfo.SlotIndex,
-		"total":       slotInfo.Total / 100000000,
-		"longAmount":  float64(slotInfo.LongInfo.Amount) / 100000000,
-		"shortAmount": float64(slotInfo.ShortInfo.Amount) / 100000000,
+		"total":       slotInfo.Total,
+		"longAmount":  float64(slotInfo.LongInfo.Amount),
+		"shortAmount": float64(slotInfo.ShortInfo.Amount),
 		"slotOver":    slotOver,
 		"deadline":    chainInfo.DeadLine})
 }
