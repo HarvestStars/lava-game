@@ -137,6 +137,7 @@ func OrderHandler(c *gin.Context) {
 	json.Unmarshal([]byte(accountInfo), &slotInfo)
 
 	c.JSON(200, gin.H{
+		"height":      chainInfo.Height,
 		"longAddr":    slotInfo.LongInfo.Addr,
 		"shortAddr":   slotInfo.ShortInfo.Addr,
 		"slotIndex":   chainInfo.SlotIndex,
