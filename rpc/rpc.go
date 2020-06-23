@@ -137,15 +137,16 @@ func OrderHandler(c *gin.Context) {
 	json.Unmarshal([]byte(accountInfo), &slotInfo)
 
 	c.JSON(200, gin.H{
-		"height":      chainInfo.Height,
-		"longAddr":    slotInfo.LongInfo.Addr,
-		"shortAddr":   slotInfo.ShortInfo.Addr,
-		"slotIndex":   chainInfo.SlotIndex,
-		"total":       slotInfo.Total,
-		"longAmount":  float64(slotInfo.LongInfo.Amount),
-		"shortAmount": float64(slotInfo.ShortInfo.Amount),
-		"slotOver":    slotOver,
-		"deadline":    chainInfo.DeadLine})
+		"height":       chainInfo.Height,
+		"blocksInSlot": chainInfo.BlocksInSlot,
+		"longAddr":     slotInfo.LongInfo.Addr,
+		"shortAddr":    slotInfo.ShortInfo.Addr,
+		"slotIndex":    chainInfo.SlotIndex,
+		"total":        slotInfo.Total,
+		"longAmount":   float64(slotInfo.LongInfo.Amount),
+		"shortAmount":  float64(slotInfo.ShortInfo.Amount),
+		"slotOver":     slotOver,
+		"deadline":     chainInfo.DeadLine})
 }
 
 // LiquidHandler 返回结算结果
