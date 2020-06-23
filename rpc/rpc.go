@@ -64,10 +64,10 @@ func ReadHandler(c *gin.Context) {
 		"longAddr":    slotInfo.LongInfo.Addr,
 		"shortAddr":   slotInfo.ShortInfo.Addr,
 		"slotIndex":   chainInfo.SlotIndex,
-		"total":       slotInfo.Total / 100000000,
+		"total":       slotInfo.Total,
 		"rate":        float64(slotInfo.LongInfo.Amount) / float64(slotInfo.ShortInfo.Amount),
-		"longAmount":  float64(slotInfo.LongInfo.Amount) / 100000000,
-		"shortAmount": float64(slotInfo.ShortInfo.Amount) / 100000000,
+		"longAmount":  float64(slotInfo.LongInfo.Amount),
+		"shortAmount": float64(slotInfo.ShortInfo.Amount),
 		"longRight":   float64(slotInfo.Total) / float64(slotInfo.LongInfo.Amount),
 		"shortRight":  float64(slotInfo.Total) / float64(slotInfo.ShortInfo.Amount),
 		"slotOver":    slotOver})
